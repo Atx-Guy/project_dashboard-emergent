@@ -2,30 +2,34 @@ import { Edit2, Trash2, Archive, ArchiveRestore, ExternalLink, Hammer } from "lu
 import { Button } from "@/components/ui/button";
 import { formatDistanceToNow } from "date-fns";
 
-const ProjectRow = ({ project, onEdit, onDelete, onToggleArchive, onBuild }) => {
-  let priorityClass = "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300";
-  if (project.priority === "Low") {
-    priorityClass = "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300";
-  } else if (project.priority === "High") {
-    priorityClass = "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300";
-  }
+function getPriorityClass(priority) {
+  if (priority === "Low") return "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300";
+  if (priority === "High") return "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300";
+  return "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300";
+}
 
-  let statusClass = "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300";
-  if (project.status === "In Progress") {
-    statusClass = "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300";
-  } else if (project.status === "Completed") {
-    statusClass = "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300";
-  } else if (project.status === "On Hold") {
-    statusClass = "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300";
-  }
+function getStatusClass(status) {
+  if (status === "In Progress") return "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300";
+  if (status === "Completed") return "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300";
+  if (status === "On Hold") return "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300";
+  return "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300";
+}
+
+function getTagClass(index) {
+  const modVal = index % 4;
+  if (modVal === 1) return "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300";
+  if (modVal === 2) return "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300";
+  if (modVal === 3) return "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300";
+  return "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300";
+}
+
+const ProjectRow = ({ project, onEdit, onDelete, onToggleArchive, onBuild }) => {
+  const rowClass = project.archived 
+    ? "border-b border-border last:border-b-0 hover:bg-muted/50 transition-colors p-4 group opacity-50"
+    : "border-b border-border last:border-b-0 hover:bg-muted/50 transition-colors p-4 group";
 
   return (
-    <div 
-      className={`border-b border-border last:border-b-0 hover:bg-muted/50 transition-colors p-4 group ${
-        project.archived ? "opacity-50" : ""
-      }`}
-      data-testid={`project-row-${project.id}`}
-    >
+    <div className={rowClass} data-testid={`project-row-${project.id}`}>
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-2">
@@ -39,11 +43,11 @@ const ProjectRow = ({ project, onEdit, onDelete, onToggleArchive, onBuild }) => 
               </span>
             )}
             
-            <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ring-1 ring-inset ring-gray-500/10 ${statusClass}`} data-testid="project-status">
+            <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ring-1 ring-inset ring-gray-500/10 ${getStatusClass(project.status)}`} data-testid="project-status">
               {project.status}
             </span>
             
-            <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ring-1 ring-inset ring-gray-500/10 ${priorityClass}`} data-testid="project-priority">
+            <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ring-1 ring-inset ring-gray-500/10 ${getPriorityClass(project.priority)}`} data-testid="project-priority">
               {project.priority}
             </span>
           </div>
@@ -56,23 +60,15 @@ const ProjectRow = ({ project, onEdit, onDelete, onToggleArchive, onBuild }) => 
 
           {project.tags && project.tags.length > 0 && (
             <div className="flex flex-wrap gap-2 mb-2">
-              {project.tags.map((tag, index) => {
-                const modVal = index % 4;
-                let tagClass = "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300";
-                if (modVal === 1) tagClass = "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300";
-                if (modVal === 2) tagClass = "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300";
-                if (modVal === 3) tagClass = "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300";
-                
-                return (
-                  <span
-                    key={index}
-                    className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-mono ${tagClass}`}
-                    data-testid={`project-tag-${index}`}
-                  >
-                    {tag}
-                  </span>
-                );
-              })}
+              {project.tags.map((tag, idx) => (
+                <span
+                  key={idx}
+                  className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-mono ${getTagClass(idx)}`}
+                  data-testid={`project-tag-${idx}`}
+                >
+                  {tag}
+                </span>
+              ))}
             </div>
           )}
 
