@@ -83,15 +83,9 @@ const ProjectRow = ({ project, onEdit, onDelete, onToggleArchive, onBuild }) => 
 
           {project.tags && project.tags.length > 0 && (
             <div className="flex flex-wrap gap-2 mb-2">
-              {project.tags.map((tag, idx) => (
-                <span
-                  key={idx}
-                  className="inline-flex items-center px-2 py-0.5 rounded text-xs font-mono bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300"
-                  data-testid={`project-tag-${idx}`}
-                >
-                  {tag}
-                </span>
-              ))}
+              <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-mono bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300">
+                Tags: {project.tags.join(", ")}
+              </span>
             </div>
           )}
 
