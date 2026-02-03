@@ -16,8 +16,8 @@ function App() {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedTag, setSelectedTag] = useState("");
-  const [selectedStatus, setSelectedStatus] = useState("");
+  const [selectedTag, setSelectedTag] = useState("all");
+  const [selectedStatus, setSelectedStatus] = useState("all");
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [editingProject, setEditingProject] = useState(null);
 
