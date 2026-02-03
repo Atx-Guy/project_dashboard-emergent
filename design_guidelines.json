@@ -1,0 +1,108 @@
+{
+  "typography": {
+    "font_family": {
+      "headings": "Public Sans, sans-serif",
+      "body": "Inter, sans-serif",
+      "mono": "JetBrains Mono, monospace"
+    },
+    "weights": {
+      "light": 300,
+      "regular": 400,
+      "medium": 500,
+      "semibold": 600,
+      "bold": 700
+    },
+    "sizes": {
+      "h1": "text-4xl font-semibold tracking-tight",
+      "h2": "text-3xl font-medium tracking-tight",
+      "h3": "text-2xl font-medium",
+      "body": "text-base leading-relaxed",
+      "small": "text-sm text-muted-foreground",
+      "tiny": "text-xs font-mono uppercase tracking-wider"
+    },
+    "instructions": "Import 'Public Sans' and 'JetBrains Mono' from Google Fonts. Use Public Sans for all Headings (h1-h3) to give a 'Utility/Government' clean feel. Use Inter for body text. Use JetBrains Mono for tags, IDs, and code snippets."
+  },
+  "colors": {
+    "theme_strategy": "Notion-Inspired Utility",
+    "light_mode": {
+      "background": "#FFFFFF",
+      "foreground": "#37352F",
+      "card": "#F7F7F5",
+      "card_foreground": "#37352F",
+      "border": "#E9E9E7",
+      "muted": "#F1F0EF",
+      "primary": "#2F2F2F",
+      "primary_foreground": "#FFFFFF"
+    },
+    "dark_mode": {
+      "background": "#191919",
+      "foreground": "#D4D4D4",
+      "card": "#202020",
+      "card_foreground": "#E0E0E0",
+      "border": "#2F2F2F",
+      "muted": "#2C2C2C",
+      "primary": "#E0E0E0",
+      "primary_foreground": "#191919"
+    },
+    "accents": {
+      "build_action": "#0066FF",
+      "archive_state": "#9CA3AF",
+      "tags": {
+        "default": "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300",
+        "red": "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300",
+        "orange": "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300",
+        "green": "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300",
+        "blue": "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300",
+        "purple": "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300"
+      }
+    }
+  },
+  "layout": {
+    "spacing_system": "Generous. Use p-6 or p-8 for containers. Use gap-4 for lists.",
+    "container_width": "max-w-5xl mx-auto",
+    "grid_strategy": "List-First. The main view is a vertical stack (flex-col) or a Table. Do not use Masonry grids for this project logger.",
+    "border_radius": {
+      "default": "rounded-sm",
+      "card": "rounded-md",
+      "button": "rounded-md"
+    }
+  },
+  "components": {
+    "ProjectRow": {
+      "description": "A horizontal strip representing a project. Not a card.",
+      "style": "border-b border-border hover:bg-muted/50 transition-colors p-4 flex items-center justify-between group",
+      "interactions": "Clicking the row opens details. Action buttons (Edit, Build) appear on hover (opacity-0 group-hover:opacity-100)."
+    },
+    "BuildButton": {
+      "description": "The primary action to 'build' a project.",
+      "style": "border border-dashed border-blue-500/40 text-blue-600 hover:bg-blue-50 hover:border-solid hover:border-blue-600 transition-all rounded-sm px-3 py-1 text-xs font-mono uppercase"
+    },
+    "StatusBadge": {
+      "description": "Minimalist status indicator.",
+      "style": "inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ring-1 ring-inset ring-gray-500/10"
+    },
+    "SearchInput": {
+      "description": "Command-palette style search.",
+      "style": "w-full bg-muted/30 border-none focus:ring-0 text-lg placeholder:text-muted-foreground/50 py-4"
+    }
+  },
+  "visual_enhancers": {
+    "icons": "Lucide React. Use thin strokes (stroke-width={1.5}) for a refined look.",
+    "textures": "Subtle noise overlay on the background (opacity 0.02) to give a paper feel.",
+    "empty_states": {
+      "light_mode_image": "https://images.unsplash.com/photo-1768578718801-2086a673f15e?crop=entropy&cs=srgb&fm=jpg&q=85",
+      "dark_mode_image": "https://images.unsplash.com/photo-1760143769777-66e289e78ae9?crop=entropy&cs=srgb&fm=jpg&q=85",
+      "description": "Use these abstract geometric images for 'No Projects Found' or 'Welcome' screens."
+    }
+  },
+  "universal_guidelines": [
+    "Do not use gradients for backgrounds. Stick to solid, matte colors.",
+    "Use 'Inter' for UI text but 'Public Sans' for Headings to differentiate from default Shadcn.",
+    "Ensure Dark Mode is not 'Pitch Black' (#000000) but 'Dark Grey' (#191919).",
+    "All interactive elements must have a data-testid attribute.",
+    "Use 'sonner' for toast notifications.",
+    "Avoid 'Card' components for the main list. Use a 'Table' or 'List Row' metaphor.",
+    "The 'Build' button should feel mechanical/technical, not like a marketing CTA."
+  ],
+  "instructions_to_main_agent": "You are building a Notion-style Project Logger. Focus on the 'List View' as the primary interface. The 'Add Project' experience should be a modal or a slide-over, not a separate page. Use the provided image URLs for empty states. Implement the 'Build' button with the specific dashed-border style defined in components."
+}
