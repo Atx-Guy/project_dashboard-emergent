@@ -75,7 +75,7 @@ const Header = ({
               <SelectValue placeholder="All Status" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Status</SelectItem>
+              <SelectItem value="all">All Status</SelectItem>
               {allStatuses.map((status) => (
                 <SelectItem key={status} value={status}>
                   {status}
@@ -90,7 +90,7 @@ const Header = ({
               <SelectValue placeholder="All Tags" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Tags</SelectItem>
+              <SelectItem value="all">All Tags</SelectItem>
               {allTags.map((tag) => (
                 <SelectItem key={tag} value={tag}>
                   {tag}
