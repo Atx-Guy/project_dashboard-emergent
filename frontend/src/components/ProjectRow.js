@@ -46,11 +46,11 @@ const ProjectRow = ({ project, onEdit, onDelete, onToggleArchive, onBuild }) => 
               </span>
             )}
             
-            <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ring-1 ring-inset ring-gray-500/10 ${getStatusColor(project.status)}`} data-testid="project-status">
+            <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ring-1 ring-inset ring-gray-500/10 ${statusColor}`} data-testid="project-status">
               {project.status}
             </span>
             
-            <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ring-1 ring-inset ring-gray-500/10 ${getPriorityColor(project.priority)}`} data-testid="project-priority">
+            <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ring-1 ring-inset ring-gray-500/10 ${priorityColor}`} data-testid="project-priority">
               {project.priority}
             </span>
           </div>
