@@ -3,26 +3,21 @@ import { Button } from "@/components/ui/button";
 import { formatDistanceToNow } from "date-fns";
 
 const ProjectRow = ({ project, onEdit, onDelete, onToggleArchive, onBuild }) => {
-  const getPriorityClass = () => {
-    if (project.priority === "Low") return "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300";
-    if (project.priority === "High") return "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300";
-    return "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300";
-  };
+  let priorityClass = "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300";
+  if (project.priority === "Low") {
+    priorityClass = "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300";
+  } else if (project.priority === "High") {
+    priorityClass = "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300";
+  }
 
-  const getStatusClass = () => {
-    if (project.status === "In Progress") return "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300";
-    if (project.status === "Completed") return "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300";
-    if (project.status === "On Hold") return "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300";
-    return "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300";
-  };
-
-  const getTagClass = (idx) => {
-    const mod = idx % 4;
-    if (mod === 1) return "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300";
-    if (mod === 2) return "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300";
-    if (mod === 3) return "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300";
-    return "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300";
-  };
+  let statusClass = "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300";
+  if (project.status === "In Progress") {
+    statusClass = "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300";
+  } else if (project.status === "Completed") {
+    statusClass = "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300";
+  } else if (project.status === "On Hold") {
+    statusClass = "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300";
+  }
 
   return (
     <div 
@@ -44,11 +39,11 @@ const ProjectRow = ({ project, onEdit, onDelete, onToggleArchive, onBuild }) => 
               </span>
             )}
             
-            <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ring-1 ring-inset ring-gray-500/10 ${getStatusClass()}`} data-testid="project-status">
+            <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ring-1 ring-inset ring-gray-500/10 ${statusClass}`} data-testid="project-status">
               {project.status}
             </span>
             
-            <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ring-1 ring-inset ring-gray-500/10 ${getPriorityClass()}`} data-testid="project-priority">
+            <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ring-1 ring-inset ring-gray-500/10 ${priorityClass}`} data-testid="project-priority">
               {project.priority}
             </span>
           </div>
@@ -59,17 +54,25 @@ const ProjectRow = ({ project, onEdit, onDelete, onToggleArchive, onBuild }) => 
             </p>
           )}
 
-          {project.tags.length > 0 && (
+          {project.tags && project.tags.length > 0 && (
             <div className="flex flex-wrap gap-2 mb-2">
-              {project.tags.map((tag, index) => (
-                <span
-                  key={index}
-                  className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-mono ${getTagClass(index)}`}
-                  data-testid={`project-tag-${index}`}
-                >
-                  {tag}
-                </span>
-              ))}
+              {project.tags.map((tag, index) => {
+                const modVal = index % 4;
+                let tagClass = "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300";
+                if (modVal === 1) tagClass = "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300";
+                if (modVal === 2) tagClass = "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300";
+                if (modVal === 3) tagClass = "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300";
+                
+                return (
+                  <span
+                    key={index}
+                    className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-mono ${tagClass}`}
+                    data-testid={`project-tag-${index}`}
+                  >
+                    {tag}
+                  </span>
+                );
+              })}
             </div>
           )}
 
