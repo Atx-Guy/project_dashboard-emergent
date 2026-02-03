@@ -2,35 +2,29 @@ import { Edit2, Trash2, Archive, ArchiveRestore, ExternalLink, Hammer } from "lu
 import { Button } from "@/components/ui/button";
 import { formatDistanceToNow } from "date-fns";
 
+const priorityColors = {
+  Low: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300",
+  Medium: "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300",
+  High: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300",
+};
+
+const statusColors = {
+  "Not Started": "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300",
+  "In Progress": "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300",
+  "Completed": "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300",
+  "On Hold": "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300",
+};
+
+const tagColors = [
+  "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300",
+  "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300",
+  "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300",
+  "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300",
+];
+
 const ProjectRow = ({ project, onEdit, onDelete, onToggleArchive, onBuild }) => {
-  const getPriorityColor = (priority) => {
-    const colors = {
-      Low: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300",
-      Medium: "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300",
-      High: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300",
-    };
-    return colors[priority] || colors.Medium;
-  };
-
-  const getStatusColor = (status) => {
-    const colors = {
-      "Not Started": "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300",
-      "In Progress": "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300",
-      "Completed": "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300",
-      "On Hold": "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300",
-    };
-    return colors[status] || colors["Not Started"];
-  };
-
-  const getTagColors = (index) => {
-    const colors = [
-      "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300",
-      "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300",
-      "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300",
-      "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300",
-    ];
-    return colors[index % colors.length];
-  };
+  const priorityColor = priorityColors[project.priority] || priorityColors.Medium;
+  const statusColor = statusColors[project.status] || statusColors["Not Started"];
 
   return (
     <div 
