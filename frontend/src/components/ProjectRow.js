@@ -2,29 +2,27 @@ import { Edit2, Trash2, Archive, ArchiveRestore, ExternalLink, Hammer } from "lu
 import { Button } from "@/components/ui/button";
 import { formatDistanceToNow } from "date-fns";
 
-const priorityColors = {
-  Low: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300",
-  Medium: "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300",
-  High: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300",
-};
-
-const statusColors = {
-  "Not Started": "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300",
-  "In Progress": "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300",
-  "Completed": "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300",
-  "On Hold": "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300",
-};
-
-const tagColors = [
-  "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300",
-  "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300",
-  "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300",
-  "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300",
-];
-
 const ProjectRow = ({ project, onEdit, onDelete, onToggleArchive, onBuild }) => {
-  const priorityColor = priorityColors[project.priority] || priorityColors.Medium;
-  const statusColor = statusColors[project.status] || statusColors["Not Started"];
+  const getPriorityClass = () => {
+    if (project.priority === "Low") return "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300";
+    if (project.priority === "High") return "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300";
+    return "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300";
+  };
+
+  const getStatusClass = () => {
+    if (project.status === "In Progress") return "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300";
+    if (project.status === "Completed") return "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300";
+    if (project.status === "On Hold") return "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300";
+    return "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300";
+  };
+
+  const getTagClass = (idx) => {
+    const mod = idx % 4;
+    if (mod === 1) return "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300";
+    if (mod === 2) return "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300";
+    if (mod === 3) return "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300";
+    return "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300";
+  };
 
   return (
     <div 
