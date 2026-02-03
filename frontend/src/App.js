@@ -1,53 +1,150 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import "@/App.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
 import axios from "axios";
+import { ThemeProvider } from "@/components/ThemeProvider";
+import Header from "@/components/Header";
+import ProjectList from "@/components/ProjectList";
+import AddProjectModal from "@/components/AddProjectModal";
+import EditProjectModal from "@/components/EditProjectModal";
+import { Toaster } from "@/components/ui/sonner";
+import { toast } from "sonner";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-const Home = () => {
-  const helloWorldApi = async () => {
+function App() {
+  const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedTag, setSelectedTag] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState("");
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [editingProject, setEditingProject] = useState(null);
+
+  const fetchProjects = async (search = "", tag = "", status = "") => {
     try {
-      const response = await axios.get(`${API}/`);
-      console.log(response.data.message);
-    } catch (e) {
-      console.error(e, `errored out requesting / api`);
+      const params = new URLSearchParams();
+      if (search) params.append("search", search);
+      if (tag) params.append("tag", tag);
+      if (status) params.append("status", status);
+      
+      const response = await axios.get(`${API}/projects?${params.toString()}`);
+      setProjects(response.data);
+    } catch (error) {
+      console.error("Error fetching projects:", error);
+      toast.error("Failed to load projects");
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    helloWorldApi();
-  }, []);
+    fetchProjects(searchQuery, selectedTag, selectedStatus);
+  }, [searchQuery, selectedTag, selectedStatus]);
+
+  const handleAddProject = async (projectData) => {
+    try {
+      await axios.post(`${API}/projects`, projectData);
+      toast.success("Project added successfully");
+      fetchProjects(searchQuery, selectedTag, selectedStatus);
+      setIsAddModalOpen(false);
+    } catch (error) {
+      console.error("Error adding project:", error);
+      toast.error("Failed to add project");
+    }
+  };
+
+  const handleUpdateProject = async (projectId, projectData) => {
+    try {
+      await axios.put(`${API}/projects/${projectId}`, projectData);
+      toast.success("Project updated successfully");
+      fetchProjects(searchQuery, selectedTag, selectedStatus);
+      setEditingProject(null);
+    } catch (error) {
+      console.error("Error updating project:", error);
+      toast.error("Failed to update project");
+    }
+  };
+
+  const handleDeleteProject = async (projectId) => {
+    try {
+      await axios.delete(`${API}/projects/${projectId}`);
+      toast.success("Project deleted successfully");
+      fetchProjects(searchQuery, selectedTag, selectedStatus);
+    } catch (error) {
+      console.error("Error deleting project:", error);
+      toast.error("Failed to delete project");
+    }
+  };
+
+  const handleToggleArchive = async (projectId, archived) => {
+    try {
+      await axios.patch(`${API}/projects/${projectId}/archive`, { archived });
+      toast.success(archived ? "Project archived" : "Project unarchived");
+      fetchProjects(searchQuery, selectedTag, selectedStatus);
+    } catch (error) {
+      console.error("Error toggling archive:", error);
+      toast.error("Failed to update project");
+    }
+  };
+
+  const handleBuildProject = async (projectId, projectName) => {
+    try {
+      const response = await axios.post(`${API}/projects/${projectId}/build`);
+      toast.success(`Building: ${projectName}`);
+    } catch (error) {
+      console.error("Error building project:", error);
+      toast.error("Failed to build project");
+    }
+  };
+
+  const allTags = [...new Set(projects.flatMap(p => p.tags))].sort();
+  const allStatuses = ["Not Started", "In Progress", "Completed", "On Hold"];
 
   return (
-    <div>
-      <header className="App-header">
-        <a
-          className="App-link"
-          href="https://emergent.sh"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img src="https://avatars.githubusercontent.com/in/1201222?s=120&u=2686cf91179bbafbc7a71bfbc43004cf9ae1acea&v=4" />
-        </a>
-        <p className="mt-5">Building something incredible ~!</p>
-      </header>
-    </div>
-  );
-};
+    <ThemeProvider defaultTheme="light" storageKey="project-logger-theme">
+      <div className="min-h-screen bg-background">
+        <Header 
+          onAddProject={() => setIsAddModalOpen(true)}
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          selectedTag={selectedTag}
+          setSelectedTag={setSelectedTag}
+          selectedStatus={selectedStatus}
+          setSelectedStatus={setSelectedStatus}
+          allTags={allTags}
+          allStatuses={allStatuses}
+        />
+        
+        <main className="max-w-5xl mx-auto px-6 py-8">
+          <ProjectList
+            projects={projects}
+            loading={loading}
+            onEdit={setEditingProject}
+            onDelete={handleDeleteProject}
+            onToggleArchive={handleToggleArchive}
+            onBuild={handleBuildProject}
+          />
+        </main>
 
-function App() {
-  return (
-    <div className="App">
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />}>
-            <Route index element={<Home />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
-    </div>
+        <AddProjectModal
+          isOpen={isAddModalOpen}
+          onClose={() => setIsAddModalOpen(false)}
+          onAdd={handleAddProject}
+        />
+
+        {editingProject && (
+          <EditProjectModal
+            isOpen={!!editingProject}
+            onClose={() => setEditingProject(null)}
+            onUpdate={handleUpdateProject}
+            project={editingProject}
+          />
+        )}
+
+        <Toaster position="bottom-right" />
+      </div>
+    </ThemeProvider>
   );
 }
 
