@@ -21,12 +21,12 @@ function App() {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [editingProject, setEditingProject] = useState(null);
 
-  const fetchProjects = async (search = "", tag = "", status = "") => {
+  const fetchProjects = async (search = "", tag = "all", status = "all") => {
     try {
       const params = new URLSearchParams();
       if (search) params.append("search", search);
-      if (tag) params.append("tag", tag);
-      if (status) params.append("status", status);
+      if (tag && tag !== "all") params.append("tag", tag);
+      if (status && status !== "all") params.append("status", status);
       
       const response = await axios.get(`${API}/projects?${params.toString()}`);
       setProjects(response.data);
