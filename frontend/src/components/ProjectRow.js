@@ -1,35 +1,29 @@
 import { Edit2, Trash2, Archive, ArchiveRestore, ExternalLink, Hammer } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { formatDistanceToNow } from "date-fns";
-
-function getPriorityClass(priority) {
-  if (priority === "Low") return "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300";
-  if (priority === "High") return "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300";
-  return "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300";
-}
-
-function getStatusClass(status) {
-  if (status === "In Progress") return "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300";
-  if (status === "Completed") return "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300";
-  if (status === "On Hold") return "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300";
-  return "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300";
-}
-
-function getTagClass(index) {
-  const modVal = index % 4;
-  if (modVal === 1) return "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300";
-  if (modVal === 2) return "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300";
-  if (modVal === 3) return "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300";
-  return "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300";
-}
 
 const ProjectRow = ({ project, onEdit, onDelete, onToggleArchive, onBuild }) => {
-  const rowClass = project.archived 
-    ? "border-b border-border last:border-b-0 hover:bg-muted/50 transition-colors p-4 group opacity-50"
-    : "border-b border-border last:border-b-0 hover:bg-muted/50 transition-colors p-4 group";
+  const formatDate = (dateStr) => {
+    try {
+      const date = new Date(dateStr);
+      const now = new Date();
+      const diffMs = now - date;
+      const diffMins = Math.floor(diffMs / 60000);
+      const diffHours = Math.floor(diffMs / 3600000);
+      const diffDays = Math.floor(diffMs / 86400000);
+      
+      if (diffMins < 60) return `${diffMins} minutes ago`;
+      if (diffHours < 24) return `${diffHours} hours ago`;
+      return `${diffDays} days ago`;
+    } catch {
+      return "recently";
+    }
+  };
 
   return (
-    <div className={rowClass} data-testid={`project-row-${project.id}`}>
+    <div 
+      className={`border-b border-border last:border-b-0 hover:bg-muted/50 transition-colors p-4 group ${project.archived ? "opacity-50" : ""}`}
+      data-testid={`project-row-${project.id}`}
+    >
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-2">
@@ -43,13 +37,42 @@ const ProjectRow = ({ project, onEdit, onDelete, onToggleArchive, onBuild }) => 
               </span>
             )}
             
-            <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ring-1 ring-inset ring-gray-500/10 ${getStatusClass(project.status)}`} data-testid="project-status">
-              {project.status}
-            </span>
+            {project.status === "In Progress" && (
+              <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ring-1 ring-inset ring-gray-500/10 bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300" data-testid="project-status">
+                {project.status}
+              </span>
+            )}
+            {project.status === "Completed" && (
+              <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ring-1 ring-inset ring-gray-500/10 bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300" data-testid="project-status">
+                {project.status}
+              </span>
+            )}
+            {project.status === "On Hold" && (
+              <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ring-1 ring-inset ring-gray-500/10 bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300" data-testid="project-status">
+                {project.status}
+              </span>
+            )}
+            {project.status === "Not Started" && (
+              <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ring-1 ring-inset ring-gray-500/10 bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300" data-testid="project-status">
+                {project.status}
+              </span>
+            )}
             
-            <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ring-1 ring-inset ring-gray-500/10 ${getPriorityClass(project.priority)}`} data-testid="project-priority">
-              {project.priority}
-            </span>
+            {project.priority === "Low" && (
+              <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ring-1 ring-inset ring-gray-500/10 bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300" data-testid="project-priority">
+                {project.priority}
+              </span>
+            )}
+            {project.priority === "High" && (
+              <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ring-1 ring-inset ring-gray-500/10 bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300" data-testid="project-priority">
+                {project.priority}
+              </span>
+            )}
+            {project.priority === "Medium" && (
+              <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ring-1 ring-inset ring-gray-500/10 bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300" data-testid="project-priority">
+                {project.priority}
+              </span>
+            )}
           </div>
 
           {project.description && (
@@ -63,7 +86,7 @@ const ProjectRow = ({ project, onEdit, onDelete, onToggleArchive, onBuild }) => 
               {project.tags.map((tag, idx) => (
                 <span
                   key={idx}
-                  className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-mono ${getTagClass(idx)}`}
+                  className="inline-flex items-center px-2 py-0.5 rounded text-xs font-mono bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300"
                   data-testid={`project-tag-${idx}`}
                 >
                   {tag}
@@ -74,7 +97,7 @@ const ProjectRow = ({ project, onEdit, onDelete, onToggleArchive, onBuild }) => 
 
           <div className="flex items-center gap-4 text-xs text-muted-foreground">
             <span data-testid="project-last-updated">
-              Updated {formatDistanceToNow(new Date(project.lastUpdated), { addSuffix: true })}
+              Updated {formatDate(project.lastUpdated)}
             </span>
             
             {project.url && (
